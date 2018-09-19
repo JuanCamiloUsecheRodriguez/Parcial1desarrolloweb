@@ -1,0 +1,45 @@
+Para las malezas :v
+
+Tutorial de heroku
+Entrar por cmd a la carpeta del repositorio, correr
+  heroku login (iniciar sesion)
+  heroku create nombre-de-mi-app
+  git push heroku master (el repo de github debe tener todos los ultimos cambios)
+
+Añadir estas cosas que dice orlando (decidir si se va a compilar el proyecto con npm o con yarn borrar los archivos conflictivos Y LEER CAMILO LEER)
+Ver el commit https://github.com/zlcastaneda10/ejemploDefinitivo/commit/deb126e7d539c8043b8298de2c67336d707cdd1c para mas informacion sobre donde añadir estas cosas
+
+"engines": {
+    "node": "8.11.4",
+    "npm": "^6.4.1"
+  }
+  // Esto fuerza la version de node y npm que va a usar heroku para no tener problemas de versiones con librerias e.g.(bcrypt)
+
+"scripts": {
+    "start": "node ./bin/www",
+    "heroku-postbuild": "cd cliente && npm install && npm run build"
+    //Esto le dice a heroku que vaya a la carpeta del front instale dependencias y haga el build de react
+
+    "heroku-postbuild": "cd cliente && yarn install && yarn build"
+    //version yarn
+  }
+
+
+  !!!IMPORTANTE
+Agregar esto en el app.js de express (backend)
+
+  //voy a pedirle a Node que me corra el react precompilado
+app.use(express.static(path.join(__dirname, 'cliente/build')));
+
+tambien es importante instalar y requerir dotenv en este archivo (revisarlo)
+Se deben cambiar las variables locales por variables de entorno.
+
+Variables de entorno
+
+crear un archivo .env
+MONGODB_URI='mongodb://localhost:27017'
+DB_NAME='swipe'
+
+ese archivo debe estar ignorado de git !important
+las variables deben configurarse en heroku (cliente web) en settings/config vars
+

@@ -1,0 +1,35 @@
+Guia de comandos utiles para el parcial
+
+Comandos de VS Code
+    Ctrl KS para guardar todos los archivos
+    CrtlK + CtrlF para indentar lo seleccionado
+    Ctrl} para "toggle" comentar una linea a
+    CtrlAlt Para crear varios cursores
+    Ctrl Shift Para seleccionar hasta la sgte palabra
+
+Asegurarse de tener instalado lo necesario:
+    npm install express- generator -g 
+    npm install yarn -g (usar solo yarn para evitar problemas con el despliegue en heroku)
+
+Generar el backend:
+    express repoParcial
+    cd repoParcial
+    yarn install
+    yarn start (verificar que node corre correctamente en el puerto 3000 luego cambiar a 3001)
+
+Generar el frontend:
+    npx create-react-app cliente
+    yarn install
+    yarn start
+
+Para correr el repositorio: 
+    yarn start (en la caperta del back)
+    cd cliente
+    yarn start (en la carpeta del front)
+
+Mongo:
+Documentacion util
+    http://mongodb.github.io/node-mongodb-native/3.1/quick-start/quick-start/
+
+Importar DB (Asegurarse de que efectivamente sea un JSON Array)
+    cd data/ mongoimport -d swipe -c objects --jsonArray --file swipe.json

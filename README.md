@@ -1,6 +1,6 @@
 # Parcial1
 ## Description
-Esta aplicación permite la visualización de un json a traves de vega, le puedo cargar un archivo y se actualiza. Tiene una adición creativa. Primero que funcione el JSON y la visualizacion.
+Esta aplicación permite la visualización de datos haciendo uso de vega embed, puedo cargar un archivo y actualzarlo. Tiene una adición creativa.
 
 ## Getting Started
 First you need a packge manager, I recommend [yarn](https://yarnpkg.com/en/docs/install).

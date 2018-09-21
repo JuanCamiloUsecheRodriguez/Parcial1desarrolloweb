@@ -11,18 +11,25 @@ class App extends Component {
     this.state= {
       JSON: '',
       myData: '',
-      data: {values:[{date:'2018/05/21', temp:100},{date:'2018/05/22', temp:99}]},
+      rates: [
+        {  name: "Jhon", rate: 5}
+      ],
+      file:null
+      
     };
 
     this.change = this.change.bind(this);
     this.renderGraphsJSON = this.renderGraphsJSON.bind(this);
     this.renderGraphsCSV = this.renderGraphsCSV.bind(this);
     this.rate = this.rate.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
-  //Despues de que renderizo llamo a este metodo ... NPI de que es esto? leer sobre el ciclo de vida
   componentDidMount(){    
-     
+    fetch('/getData')
+      .then((res)=>res.json() )
+      .then((json)=> this.setState({rates:json}))
+      .catch((err) => console.log(err)); 
   }
   change (event) {
     this.setState({
@@ -76,8 +83,7 @@ class App extends Component {
         'x': {'field': 'b', 'type': 'quantitative'}
       }
     };
-    var input = document.querySelector('#file');
-    Papa.parse('https://raw.githubusercontent.com/domoritz/maps/master/data/seattle-temps.csv', {
+    Papa.parse(this.state.file, {
       download: true,
       header: true,
       complete: function(results) {
@@ -85,11 +91,13 @@ class App extends Component {
         this.setState({
           myData: datos,
         });
+        console.log(this.state.myData);
+        vegaEmbed(this.div, spec).catch(error => console.log(error))
+          .then((res) =>  res.view.insert('myData', this.state.myData).run());
       }.bind(this)
-    });
-    console.log(this.state.myData);
-    vegaEmbed(this.div, spec).catch(error => console.log(error))
-      .then((res) =>  res.view.insert('myData', this.state.myData).run());
+    }
+    );
+    
   }
 
   rate(e){
@@ -111,6 +119,17 @@ class App extends Component {
       .then(json => {
         console.log('json', json);
       });
+    window.alert('Your review has been saved');
+    this.componentDidMount();
+  }
+  renderReviews(){
+    return this.state.rates.map((rat) => 
+      <div key={rat.name}>{rat.name}-{rat.rate} </div>
+    );
+  }
+  
+  onChange(e) {
+    this.setState({file:e.target.files[0]});
   }
 
   render() {
@@ -121,9 +140,16 @@ class App extends Component {
         <input name ="JSON  " type="text" value={this.state.JSON} onChange={this.change} />
         <button className="nav_btn"  onClick={e=>this.renderGraphsJSON(e)}>Generate graph using your JSON</button>
         <h2>Upload a csv file</h2>
-        <input type="file" id="file" name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" multiple />
+        <input type="file" onChange={this.onChange} accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+        <br/>
+        <br/>
         <button className="nav_btn"  onClick={e=>this.renderGraphsCSV(e)}>Generate graph using your CSV</button>
         <div ref={(div) => this.div=div}></div>
+        <br/>
+        <h2>User's reviews</h2>
+        <br/>
+        {this.renderReviews()}
+        <br/>
         <button className="nav_btn"  onClick={e=>this.rate(e)}>Rate the app</button>
       </div>
     );

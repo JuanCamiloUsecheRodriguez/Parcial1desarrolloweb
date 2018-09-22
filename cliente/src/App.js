@@ -5,7 +5,6 @@ import Papa from 'papaparse';
 
 
 class App extends Component {
-
   constructor(props){
     super(props);
     this.state= {
@@ -13,6 +12,13 @@ class App extends Component {
       myData: '',
       rates: [
         {  name: "Jhon", rate: 5}
+      ],
+      jsonrecords: [
+        [
+          {"a": "A","b": 28}, {"a": "B","b": 55}, {"a": "C","b": 43},
+          {"a": "D","b": 91}, {"a": "E","b": 81}, {"a": "F","b": 53},
+          {"a": "G","b": 19}, {"a": "H","b": 87}, {"a": "I","b": 52}
+        ]
       ],
       file:null
       
@@ -62,12 +68,25 @@ class App extends Component {
       this.setState({
         myData: JSON.parse(this.state.JSON),
       });
+      vegaEmbed(this.div, spec).catch(error => console.log(error))
+        .then((res) =>  res.view.insert('myData', this.state.myData).run());
+      //vamos a guardar el JSON en la bd
+      fetch('/api/savejson', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          JSON: this.state.myData,
+        }),
+      }).then(res => res.json())
+        .then(json => {
+          console.log('json', json);
+        });
     }
     catch(error){
       window.alert('EL INPUT NO ES UN JSON');
     }
-    vegaEmbed(this.div, spec).catch(error => console.log(error))
-      .then((res) =>  res.view.insert('myData', this.state.myData).run());
   }
   
   renderGraphsCSV(e){
@@ -83,23 +102,41 @@ class App extends Component {
         'x': {'field': 'b', 'type': 'quantitative'}
       }
     };
-    Papa.parse(this.state.file, {
-      download: true,
-      header: true,
-      complete: function(results) {
-        const datos= results.data;
-        this.setState({
-          myData: datos,
+    try{
+      Papa.parse(this.state.file, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          const datos= results.data;
+          this.setState({
+            myData: datos,
+          });
+          console.log(this.state.myData);
+          vegaEmbed(this.div, spec).catch(error => console.log(error))
+            .then((res) =>  res.view.insert('myData', this.state.myData).run());
+        }.bind(this)
+      }
+      );
+      /** 
+      console.log(this.state.file);
+      fetch('/api/savecsv', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          CSV: this.state.file,
+        }),
+      }).then(res => res.json())
+        .then(json => {
+          console.log('json', json);
         });
-        console.log(this.state.myData);
-        vegaEmbed(this.div, spec).catch(error => console.log(error))
-          .then((res) =>  res.view.insert('myData', this.state.myData).run());
-      }.bind(this)
+        */
     }
-    );
-    
+    catch(error){
+      window.alert('El archivo no es correcto');
+    }
   }
-
   rate(e){
     const promptname = prompt('What is your name?');
     const promptrating = prompt('Rathe the app with a numer from 1 to 5');
@@ -122,10 +159,15 @@ class App extends Component {
     window.alert('Your review has been saved');
     this.componentDidMount();
   }
+
   renderReviews(){
     return this.state.rates.map((rat) => 
       <div key={rat.name}>{rat.name}-{rat.rate} </div>
     );
+  }
+
+  renderJSONRecords(){
+   
   }
   
   onChange(e) {
@@ -137,6 +179,8 @@ class App extends Component {
       <div className="App">
         <h1>Versión minimalista de vega-lite editor</h1>
         <h2>Copy your JSON here</h2>
+        <p>Make sure to enclose it with [], use this example</p>
+        <br/>
         <input name ="JSON  " type="text" value={this.state.JSON} onChange={this.change} />
         <button className="nav_btn"  onClick={e=>this.renderGraphsJSON(e)}>Generate graph using your JSON</button>
         <h2>Upload a csv file</h2>
@@ -146,6 +190,11 @@ class App extends Component {
         <button className="nav_btn"  onClick={e=>this.renderGraphsCSV(e)}>Generate graph using your CSV</button>
         <div ref={(div) => this.div=div}></div>
         <br/>
+        <h2>JSON records</h2>
+        <br/>
+        {this.renderJSONRecords()}
+        <br/>
+        <h2>CSV records</h2>
         <h2>User's reviews</h2>
         <br/>
         {this.renderReviews()}

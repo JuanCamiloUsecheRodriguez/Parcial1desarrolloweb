@@ -10,10 +10,10 @@ const dbName = process.env.DB_NAME;
 const collectionName = 'rates';
 
 MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    console.log("Database created!");
-    db.close();
-  });
+  if (err) throw err;
+  console.log("Database created!");
+  db.close();
+});
 
 router.post('/api/post', (req, res, next) => {
   const { body } = req;
@@ -36,7 +36,27 @@ router.post('/api/post', (req, res, next) => {
       db.close();
     });
   });
+});
 
+router.post('/api/savejson', (req, res, next) => {
+  const { body } = req;
+  const {
+    JSON
+  } = body;
+
+  console.log('Please');
+  // Steps:
+  // 1. Verify email doesn't exist
+  // 2. Save
+  MongoClient.connect(url, function (err,db) {
+    if(err) throw err;
+    const dbo = db.db(dbName);
+    dbo.collection('jsonrecord').insertOne({"JSON": JSON}, function(err,res){
+      if (err) throw err;
+      console.log('1 document inserted');
+      db.close();
+    });
+  });
 });
 
 module.exports = router;

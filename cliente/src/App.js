@@ -3,7 +3,7 @@ import './App.css';
 import vegaEmbed from 'vega-embed';
 import Papa from 'papaparse';
 
-
+//NO PUDE CON LA AUTENTICACION DE MONGO, EL CODIGO QUEDO COMENTADO, PERO FUNCIONA LOCALMENTE
 class App extends Component {
   constructor(props){
     super(props);
@@ -73,6 +73,7 @@ class App extends Component {
       vegaEmbed(this.div, spec).catch(error => console.log(error))
         .then((res) =>  res.view.insert('myData', this.state.myData).run());
       //vamos a guardar el JSON en la bd
+      /**
       fetch('/api/savejson', {
         method: 'POST',
         headers: {
@@ -85,6 +86,7 @@ class App extends Component {
         .then(json => {
           console.log('json', json);
         });
+        */
     }
     catch(error){
       window.alert('EL INPUT NO ES UN JSON');

@@ -143,6 +143,7 @@ class App extends Component {
     console.log(promptname);
     console.log(promptrating);
     // Post request to backend
+    /** 
     fetch('/api/post', {
       method: 'POST',
       headers: {
@@ -157,7 +158,7 @@ class App extends Component {
         console.log('json', json);
       });
     window.alert('Your review has been saved');
-    this.componentDidMount();
+    this.componentDidMount(); */
   }
 
   renderReviews(){

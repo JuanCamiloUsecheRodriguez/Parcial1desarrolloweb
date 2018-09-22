@@ -32,10 +32,12 @@ class App extends Component {
   }
 
   componentDidMount(){    
+    /** 
     fetch('/getData')
       .then((res)=>res.json() )
       .then((json)=> this.setState({rates:json}))
       .catch((err) => console.log(err)); 
+      */
   }
   change (event) {
     this.setState({

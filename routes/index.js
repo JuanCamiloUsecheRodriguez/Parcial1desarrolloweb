@@ -20,13 +20,6 @@ function getData(callback){
     const db = client.db(dbName);
     findDocuments(db, (data)=>{
       callback(data);
-      db.createUser(
-        {
-          user: "admin",
-          pwd: "password",
-          roles: [ { role: "root", db: "admin" } ]
-        }
-      );
       client.close();
     });
 

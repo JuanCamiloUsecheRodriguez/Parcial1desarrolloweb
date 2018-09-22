@@ -12,13 +12,6 @@ const collectionName = 'rates';
 MongoClient.connect(url, function(err, db) {
   if (err) throw err;
   console.log("Database created!");
-  db.createUser(
-    {
-      user: "admin",
-      pwd: "password",
-      roles: [ { role: "root", db: "admin" } ]
-    }
-  );
   db.close();
 });
 
